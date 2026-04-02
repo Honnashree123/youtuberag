@@ -443,8 +443,6 @@ with qa_container:
 
                 st.subheader("Relevant Video Segment")
 
-                embed_url = f"https://www.youtube.com/embed/{video_id}?start={earliest_time}"
-
-                st.components.v1.iframe(embed_url, height=350)
+                st.video(f"https://www.youtube.com/watch?v={video_id}", start_time=earliest_time)
 
                 st.caption(f"Starting at {earliest_time} seconds")
