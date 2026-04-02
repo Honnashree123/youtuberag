@@ -75,15 +75,25 @@ qa_container = st.container()
 def get_transcript(video_id):
 
     try:
+        # Try without proxies first
         fetched_transcript = YouTubeTranscriptApi().fetch(video_id, languages=['en'])
         transcript_list = fetched_transcript.to_raw_data()
 
+    except CouldNotRetrieveTranscript:
+        # If blocked, try with a free proxy (you can replace with your own proxy)
+        try:
+            proxies = {
+                'http': 'http://proxy.example.com:8080',  # Replace with actual proxy
+                'https': 'http://proxy.example.com:8080'   # Replace with actual proxy
+            }
+            fetched_transcript = YouTubeTranscriptApi().fetch(video_id, languages=['en'], proxies=proxies)
+            transcript_list = fetched_transcript.to_raw_data()
+        except Exception:
+            st.error("Unable to fetch transcript. This may be due to YouTube blocking requests from cloud IPs (common in deployed apps). Try running the app locally instead, or configure proxies in the code.")
+            return None
+
     except TranscriptsDisabled:
         st.error("No captions available for this video.")
-        return None
-
-    except CouldNotRetrieveTranscript as e:
-        st.error("Unable to fetch transcript. This may be due to YouTube blocking requests from cloud IPs (common in deployed apps). Try running the app locally instead.")
         return None
 
     except NoTranscriptFound:
