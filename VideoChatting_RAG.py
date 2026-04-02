@@ -1,5 +1,5 @@
 import streamlit as st
-from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled
+from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound, CouldNotRetrieveTranscript
 
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -82,8 +82,16 @@ def get_transcript(video_id):
         st.error("No captions available for this video.")
         return None
 
+    except CouldNotRetrieveTranscript as e:
+        st.error("Unable to fetch transcript. This may be due to YouTube blocking requests from cloud IPs (common in deployed apps). Try running the app locally instead.")
+        return None
+
+    except NoTranscriptFound:
+        st.error("No transcript found for this video.")
+        return None
+
     except Exception as e:
-        st.error(f"Error fetching transcript: {e}")
+        st.error(f"Unexpected error fetching transcript: {str(e)[:200]}...")
         return None
 
     return transcript_list

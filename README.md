@@ -86,6 +86,7 @@ streamlit run qavision/visionqapp.py
 - **API errors**: Ensure your Groq API key is valid and has sufficient credits.
 - **Embedding model download**: First run may take longer due to downloading the sentence transformer model.
 - **Port conflicts**: If Streamlit port 8501 is busy, it will use the next available port.
+- **Transcript fetching fails in deployed apps**: YouTube blocks requests from cloud IPs (common on platforms like Streamlit Cloud). The app works best when run locally on your machine.
 
 ## License
 
